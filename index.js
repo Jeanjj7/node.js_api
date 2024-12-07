@@ -69,7 +69,7 @@ app.post('/cad_usuarios', (rep, res) => {
 //Deletar 
 // http://localhost:3000/deletar_usuario/
 app.delete('/deletar_usuario/:codigo', (req, res) => {
-    const id_informado  = req.params.codigo;
+    const id_informado = req.params.codigo;
     const sql = "DELETE FROM tb_usuarios WHERE id_usuario = ?";
 
     db.query(sql, [id_informado], (erro, resultados) => {
@@ -79,7 +79,7 @@ app.delete('/deletar_usuario/:codigo', (req, res) => {
         }
         if (resultados.affectedRows == 0) {
             return res.json({ mensagem: "Usuário não encontrado para exclusão" });
-        }else{
+        } else {
             return res.json({ mensagem: "Deletado com Sucesso" });
         }
 
@@ -107,7 +107,24 @@ app.put('/atualizar_usuario/:codigo', (req, res) => {
     });
 });
 
+//Rota para fazer login
+app.get('/fazerlogin/:usuario/:senha', (req, res) => {
+    const usuario = req.params.usuario;
+    const senha = req.params.senha;
+    const sql = "SELECT * FROM tb_usuarios WHERE login_usuario = ? AND senha_usuario = ?";
+    db.query(sql, [usuario, senha], (erro, resultados) => {
+        if (erro) {
+            return res.json({ mensagem: "Erro ao realizar login: " + erro.message });
+        }
+        if (resultados.length == 0) {
+            return res.json({ loginOk: false });
+        } else {
+            return res.json({ loginOk: true });
+        }
+    });
+});
 
+//Porta
 const porta = 3000;
 app.listen(porta, () => {
     console.log("Servidor executado na porta do N°" + porta);
